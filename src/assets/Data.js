@@ -1,4 +1,4 @@
-export const monthArr = [
+export const monthsArr = [
   { value: 1, text: "January", days: 31 },
   { value: 2, text: "February", days: 29 }, // not 28 - because 2016 was a leap year
   { value: 3, text: "March", days: 31 },

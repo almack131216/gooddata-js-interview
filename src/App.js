@@ -5,8 +5,8 @@ import "@gooddata/react-components/styles/css/main.css";
 
 import { ColumnChart } from "@gooddata/react-components";
 import SelectList from "./components/SelectList/SelectList";
-import { monthArr } from "./assets/Data";
-import { appendLeadingZeroes } from "./assets/Helpers";
+import { monthsArr } from "./assets/Data";
+import { appendLeadingZeroes, consoleLog } from "./assets/Helpers";
 
 const grossProfitMeasure = "/gdc/md/xms7ga4tf3g3nzucd8380o2bev8oeknp/obj/6877";
 const dateAttributeInMonths =
@@ -15,20 +15,20 @@ const dateAttribute = "/gdc/md/xms7ga4tf3g3nzucd8380o2bev8oeknp/obj/2180";
 
 class App extends Component {
   state = {
-    selectMonth: 7,
+    month: 1,
     months: []
   };
 
   componentDidMount = () => {
-    console.log("[App] componentDidMount()");
-    this.setState({ months: monthArr });
+    consoleLog("[App] componentDidMount()");
+    this.setState({ months: monthsArr });
   };
 
   handleFilterChange = event => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = event.target.name;
-    console.log("[App.js] handleFilterChange > " + name + " = " + value);
+    consoleLog("[App.js] handleFilterChange > " + name + " = " + value);
     this.setState({
       [name]: value
     });
@@ -36,8 +36,8 @@ class App extends Component {
   };
 
   getMonthFilter() {
-    const activeMonth = appendLeadingZeroes(this.state.selectMonth);
-    console.log("[App] getMonthFilter() > month=", activeMonth);
+    const activeMonth = appendLeadingZeroes(this.state.month);
+    consoleLog("[App] getMonthFilter() > activeMonth = " + activeMonth);
 
     return {
       absoluteDateFilter: {
@@ -84,7 +84,7 @@ class App extends Component {
       <SelectList
         name={getObject.name}
         selected={getObject.selected}
-        dataArr={getObject.optionsArr}
+        optionsArr={getObject.optionsArr}
         changed={this.handleFilterChange}
       />
     ) : null;
@@ -95,19 +95,19 @@ class App extends Component {
     const filters = [this.getMonthFilter()];
     const measures = this.getMeasures();
     const viewBy = this.getViewBy();
-    // SELECT month
-    const selectMonthObj = {
-      name: "selectMonth",
-      selected: this.state.selectMonth,
-      optionsArr: this.state.months.slice(0)
+    const { month, months } = this.state;
+
+    // SELECT month object
+    const monthObj = {
+      name: "month",
+      selected: month,
+      optionsArr: months.slice(0)
     };
     // (END) SELECT month
 
     return (
       <div className="App">
-        <h1>
-          $ Gross Profit in month {this.renderDropdown(selectMonthObj)} 2016
-        </h1>
+        <h1>$ Gross Profit in month {this.renderDropdown(monthObj)} 2016</h1>
         <div>
           <ColumnChart
             measures={measures}
